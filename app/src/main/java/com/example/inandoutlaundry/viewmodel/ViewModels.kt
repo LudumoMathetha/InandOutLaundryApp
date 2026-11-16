@@ -5,6 +5,7 @@ import com.example.inandoutlaundry.data.model.LaundryOrder
 import com.example.inandoutlaundry.data.model.LaundryService
 import com.example.inandoutlaundry.data.model.User
 import com.example.inandoutlaundry.data.model.UserPreference
+import com.example.inandoutlaundry.data.remote.PaymentResponse
 import com.example.inandoutlaundry.data.repository.AuthRepository
 import com.example.inandoutlaundry.data.repository.LaundryRepository
 import com.example.inandoutlaundry.data.repository.SettingsRepository
@@ -13,14 +14,14 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * AuthViewModel handles authentication business logic, input validation, and user session state.
- * Adheres to MVVM architecture, exposing StateFlow to Jetpack Compose UI.
+ * Developed by third-year software development student.
  */
 class AuthViewModel(
     val authRepository: AuthRepository = AuthRepository()
 ) : ViewModel() {
     val currentUser: StateFlow<User?> = authRepository.currentUser
 
-    fun login(email: String, pass: String): Result<User> {
+    suspend fun login(email: String, pass: String): Result<User> {
         if (!ValidationUtils.isValidEmail(email)) {
             return Result.failure(Exception("Please enter a valid email address."))
         }
@@ -59,7 +60,7 @@ class AuthViewModel(
 }
 
 /**
- * LaundryViewModel manages state and business operations for laundry services and orders.
+ * LaundryViewModel manages state and business operations for laundry services, orders, payments, and support.
  */
 class LaundryViewModel(
     val laundryRepository: LaundryRepository = LaundryRepository()
@@ -67,17 +68,24 @@ class LaundryViewModel(
     val services: List<LaundryService> = laundryRepository.getServices()
     val orders: StateFlow<List<LaundryOrder>> = laundryRepository.orders
 
-    fun createOrder(userId: String, serviceId: Int, address: String, notes: String): Result<LaundryOrder> {
+    suspend fun createOrder(userId: String, serviceId: Int, address: String, notes: String, token: String?): Result<LaundryOrder> {
         if (address.isBlank()) {
             return Result.failure(Exception("Delivery address is required."))
         }
-        val order = laundryRepository.createOrder(userId, serviceId, address, notes)
-        return Result.success(order)
+        return laundryRepository.createBooking(userId, serviceId, address, notes, token)
+    }
+
+    suspend fun submitPayment(orderIdInt: Int, paymentMethod: String): Result<PaymentResponse> {
+        return laundryRepository.submitDemoPayment(orderIdInt, paymentMethod)
+    }
+
+    suspend fun submitContact(fullName: String, email: String, subject: String, message: String): Result<Unit> {
+        return laundryRepository.submitContact(fullName, email, subject, message)
     }
 }
 
 /**
- * SettingsViewModel manages user preferences state (Dark mode, notifications, address).
+ * SettingsViewModel manages user preferences state.
  */
 class SettingsViewModel(
     val settingsRepository: SettingsRepository = SettingsRepository()

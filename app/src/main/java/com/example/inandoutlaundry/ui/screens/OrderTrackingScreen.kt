@@ -6,18 +6,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.inandoutlaundry.viewmodel.LaundryViewModel
 
+/**
+ * OrderTrackingScreen lists customer orders with status badges and payment actions.
+ * Developed by third-year software development student.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderTrackingScreen(
     laundryViewModel: LaundryViewModel,
     onBack: () -> Unit,
-    onOrderClick: (String) -> Unit
+    onOrderClick: (String) -> Unit,
+    onPayClick: (String) -> Unit
 ) {
     val orders by laundryViewModel.orders.collectAsState()
 
@@ -60,7 +67,20 @@ fun OrderTrackingScreen(
                         Text(text = "Service: ${order.serviceName}", style = MaterialTheme.typography.bodyMedium)
                         Text(text = "Status: ${order.status}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.secondary)
                         Text(text = "Address: ${order.deliveryAddress}", style = MaterialTheme.typography.bodySmall)
-                        Text(text = "Notes: ${order.notes}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Button(
+                                onClick = { onPayClick(order.id) },
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
+                            ) {
+                                Icon(Icons.Filled.Payment, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Pay Now")
+                            }
+                        }
                     }
                 }
             }

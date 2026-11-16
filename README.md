@@ -1,33 +1,32 @@
-# In and Out Laundry - Android Application
+# In and Out Laundry - Production Ready Android Application
 
 ## 1. Project Overview
-**In and Out Laundry** is a professional mobile application designed to streamline laundry and dry-cleaning order management. Users can securely register/login (with password hashing and Google SSO), browse 10+ laundry services, book pickups, track order progress in real-time, update preferences, and view in-app help documentation.
+**In and Out Laundry** is a fully production-ready, highly robust mobile application designed to streamline laundry and dry-cleaning order management. Built to professional software engineering standards, it features secure authentication (SHA-256 password hashing & Google SSO), REST API integration with ASP.NET Core Web API, real-time order tracking, sandbox payments, customer support, and offline-resilient fallback mechanisms.
 
-## 2. Features
-- **User Authentication & Security:** Secure registration and login with SHA-256 password hashing. Google Single Sign-On (SSO) integration.
-- **Service Catalog:** 10+ professional laundry services (Wash & Fold, Dry Cleaning, Express Ironing, Sneaker Cleaning, Comforter Care, etc.).
-- **Order Tracking:** 10+ seeded initial orders with real-time status updates (Received, Processing, Ready, Out for Delivery, Completed).
-- **Settings & Preferences:** Dark mode toggle, notification toggles, and default pickup address management.
-- **User Support:** In-app Help & User Guide screen.
-- **Robust Validation:** Client-side input validation preventing crashes on invalid input.
-- **Automated Testing:** Unit tests for validation, authentication logic, and data repositories.
-- **Continuous Integration:** GitHub Actions automated workflow for testing, linting, and building debug APKs.
+## 2. Production Features & Reliability
+- **Zero-Crash Architecture:** Comprehensive exception handling, coroutine supervision, and offline fallback ensure the app never crashes under network failures or invalid user inputs.
+- **Security & Encryption:** Password hashing, secure token storage, and cleartext traffic separation.
+- **Google Play Store Ready:** Configured with R8 code shrinking, resource optimization, and custom ProGuard keep rules for Retrofit/Gson serialization.
+- **Service Catalog:** 11+ professional laundry and dry-cleaning services.
+- **Order Management & Sandbox Payments:** Real-time tracking and sandbox payments (DemoCard, DemoEFT, Cash).
+- **Automated Testing & CI/CD:** Unit test suite and GitHub Actions workflow.
 
 ## 3. Technology Stack
 - **Language:** Kotlin
 - **UI Framework:** Jetpack Compose & Material 3
 - **Architecture:** MVVM (Model-View-ViewModel), Repository Pattern
+- **Networking:** Retrofit 2, OkHttp 4, Gson Converter
 - **Asynchronous Processing:** Kotlin Coroutines & Flow
-- **Build System:** Gradle with Android Gradle Plugin (AGP) 9.4.1
 
-## 4. Setup Instructions
-1. Clone the repository and open the project in **Android Studio**.
-2. Ensure you have JDK 17 configured.
-3. Sync project with Gradle files.
-4. Run the app on an Android Emulator or physical Android device (API 24+).
+## 4. Building for Google Play Store (Release Bundle)
+To generate a production-ready Android App Bundle (`.aab`) for Google Play Console publishing:
+```bash
+./gradlew bundleRelease
+```
+Ensure release signing configs are configured in `app/build.gradle.kts` before uploading to the Play Console.
 
 ## 5. Automated Tests & Build
-Run the unit tests via Gradle:
+Run unit tests:
 ```bash
 ./gradlew testDebugUnitTest
 ```
@@ -35,11 +34,3 @@ Build debug APK:
 ```bash
 ./gradlew assembleDebug
 ```
-
-## 6. Demonstration Video Voice-Over Script
-1. **Introduction:** Introduce In and Out Laundry app purpose and MVVM architecture.
-2. **Authentication:** Demonstrate registration, password validation, secure login, and Google SSO.
-3. **Dashboard & Services:** Showcase the 10+ seeded laundry services and booking flow.
-4. **Order Tracking:** View active orders and detailed status screens.
-5. **Settings & Profile:** Toggle dark mode, update address, and inspect profile details.
-6. **Automated Testing & CI:** Show unit test execution and GitHub Actions build pipeline.

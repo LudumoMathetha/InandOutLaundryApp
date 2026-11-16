@@ -1,6 +1,7 @@
 package com.example.inandoutlaundry
 
 import com.example.inandoutlaundry.data.repository.LaundryRepository
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -24,12 +25,13 @@ class LaundryRepositoryTest {
     }
 
     @Test
-    fun testCreateOrder() {
+    fun testCreateBooking() = runBlocking {
         val repo = LaundryRepository()
         val initialSize = repo.orders.value.size
-        val newOrder = repo.createOrder("user_1", 1, "124 Main Road", "Fragrance free")
+        val result = repo.createBooking("user_1", 1, "124 Main Road", "Fragrance free", null)
+        assertTrue(result.isSuccess)
         assertEquals(initialSize + 1, repo.orders.value.size)
-        assertEquals("Standard Wash & Fold", newOrder.serviceName)
-        assertEquals("Received", newOrder.status)
+        assertEquals("Standard Wash & Fold", result.getOrNull()?.serviceName)
+        assertEquals("Received", result.getOrNull()?.status)
     }
 }

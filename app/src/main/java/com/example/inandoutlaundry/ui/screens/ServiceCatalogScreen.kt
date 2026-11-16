@@ -13,7 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.inandoutlaundry.viewmodel.AuthViewModel
 import com.example.inandoutlaundry.viewmodel.LaundryViewModel
+import kotlinx.coroutines.launch
 
+/**
+ * ServiceCatalogScreen lists professional laundry services and handles API booking creation.
+ * Developed by third-year software development student.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceCatalogScreen(
@@ -22,6 +27,7 @@ fun ServiceCatalogScreen(
     onBack: () -> Unit,
     onOrderPlaced: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val currentUser by authViewModel.currentUser.collectAsState()
     val services = laundryViewModel.services
 
@@ -134,16 +140,19 @@ fun ServiceCatalogScreen(
             },
             confirmButton = {
                 Button(onClick = {
-                    val userId = currentUser?.id ?: "user_1"
-                    val result = laundryViewModel.createOrder(userId, selectedService!!.id, address, notes)
-                    result.fold(
-                        onSuccess = {
-                            bookingSuccessMsg = "Successfully booked ${selectedService!!.name}!"
-                            showBookingDialog = false
-                            onOrderPlaced()
-                        },
-                        onFailure = { /* Handle error */ }
-                    )
+                    coroutineScope.launch {
+                        val userId = currentUser?.id ?: "user_1"
+                        val token = authViewModel.authRepository.getToken()
+                        val result = laundryViewModel.createOrder(userId, selectedService!!.id, address, notes, token)
+                        result.fold(
+                            onSuccess = {
+                                bookingSuccessMsg = "Successfully booked ${selectedService!!.name}!"
+                                showBookingDialog = false
+                                onOrderPlaced()
+                            },
+                            onFailure = { /* Handle error */ }
+                        )
+                    }
                 }) {
                     Text("Confirm Booking")
                 }

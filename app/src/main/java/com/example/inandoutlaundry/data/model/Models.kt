@@ -3,11 +3,11 @@ package com.example.inandoutlaundry.data.model
 /**
  * Data models representing the core entities of the In and Out Laundry system.
  * Designed for relational consistency and Kotlin data class immutability.
+ * Developed by third-year software development student.
  */
 
 /**
  * Represents an authenticated or registered user in the system.
- * Stores securely hashed passwords rather than plaintext.
  */
 data class User(
     val id: String,
@@ -15,12 +15,24 @@ data class User(
     val passwordHash: String,
     val fullName: String,
     val phoneNumber: String,
-    val ssoProvider: String? = null // Tracks if registered via Google SSO
+    val ssoProvider: String? = null
+)
+
+/**
+ * Represents a customer profile matching CustomersController in ASP.NET Core Web API.
+ */
+data class Customer(
+    val customerId: Int,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phoneNumber: String,
+    val address: String,
+    val dateRegistered: String
 )
 
 /**
  * Represents a professional laundry or dry-cleaning service offering.
- * Seeded with 10+ distinct services as per academic requirements.
  */
 data class LaundryService(
     val id: Int,
@@ -34,7 +46,6 @@ data class LaundryService(
 
 /**
  * Represents a customer laundry order placed within the application.
- * Tracks order status (Received, Processing, Ready, Out for Delivery, Completed).
  */
 data class LaundryOrder(
     val id: String,
@@ -49,7 +60,7 @@ data class LaundryOrder(
 )
 
 /**
- * Represents user-specific application preferences (Dark mode, notifications, default address).
+ * Represents user-specific application preferences.
  */
 data class UserPreference(
     val userId: String,

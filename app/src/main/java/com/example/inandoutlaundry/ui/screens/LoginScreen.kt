@@ -3,7 +3,6 @@ package com.example.inandoutlaundry.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -15,7 +14,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.inandoutlaundry.viewmodel.AuthViewModel
+import kotlinx.coroutines.launch
 
+/**
+ * LoginScreen handles user authentication with API connectivity and local mock fallback.
+ * Developed by third-year software development student.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -23,6 +27,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("user@inandout.com") }
     var password by remember { mutableStateOf("Password123") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -98,12 +103,14 @@ fun LoginScreen(
             Button(
                 onClick = {
                     isLoading = true
-                    val result = authViewModel.login(email, password)
-                    isLoading = false
-                    result.fold(
-                        onSuccess = { onLoginSuccess() },
-                        onFailure = { errorMessage = it.localizedMessage }
-                    )
+                    coroutineScope.launch {
+                        val result = authViewModel.login(email, password)
+                        isLoading = false
+                        result.fold(
+                            onSuccess = { onLoginSuccess() },
+                            onFailure = { errorMessage = it.localizedMessage }
+                        )
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

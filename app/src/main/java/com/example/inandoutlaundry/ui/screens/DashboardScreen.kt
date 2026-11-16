@@ -13,6 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.example.inandoutlaundry.viewmodel.AuthViewModel
 import com.example.inandoutlaundry.viewmodel.LaundryViewModel
 
+/**
+ * DashboardScreen displays active orders, quick actions, and navigation access.
+ * Developed by third-year software development student.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
@@ -23,6 +27,7 @@ fun DashboardScreen(
     onNavigateToProfile: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToHelp: () -> Unit,
+    onNavigateToContact: () -> Unit,
     onLogout: () -> Unit
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
@@ -36,6 +41,9 @@ fun DashboardScreen(
                 title = { Text("In and Out Laundry - Dashboard") },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 actions = {
+                    IconButton(onClick = onNavigateToContact) {
+                        Icon(Icons.Filled.SupportAgent, contentDescription = "Contact Support")
+                    }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Filled.Settings, contentDescription = "Settings")
                     }

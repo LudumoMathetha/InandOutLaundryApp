@@ -26,7 +26,6 @@ fun NavGraph(
         navController = navController,
         startDestination = Screen.Login.route
     ) {
-        // Login Screen Route
         composable(Screen.Login.route) {
             LoginScreen(
                 authViewModel = authViewModel,
@@ -41,7 +40,6 @@ fun NavGraph(
             )
         }
 
-        // Registration Screen Route
         composable(Screen.Register.route) {
             RegisterScreen(
                 authViewModel = authViewModel,
@@ -56,7 +54,6 @@ fun NavGraph(
             )
         }
 
-        // Dashboard Screen Route
         composable(Screen.Dashboard.route) {
             DashboardScreen(
                 authViewModel = authViewModel,
@@ -76,6 +73,9 @@ fun NavGraph(
                 onNavigateToHelp = {
                     navController.navigate(Screen.Help.route)
                 },
+                onNavigateToContact = {
+                    navController.navigate(Screen.Contact.route)
+                },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Dashboard.route) { inclusive = true }
@@ -84,7 +84,6 @@ fun NavGraph(
             )
         }
 
-        // Services Catalog Route
         composable(Screen.Services.route) {
             ServiceCatalogScreen(
                 authViewModel = authViewModel,
@@ -96,18 +95,19 @@ fun NavGraph(
             )
         }
 
-        // Orders List Route
         composable(Screen.Orders.route) {
             OrderTrackingScreen(
                 laundryViewModel = laundryViewModel,
                 onBack = { navController.popBackStack() },
                 onOrderClick = { orderId ->
                     navController.navigate(Screen.OrderDetail.createRoute(orderId))
+                },
+                onPayClick = { orderId ->
+                    navController.navigate(Screen.Payment.createRoute(orderId))
                 }
             )
         }
 
-        // Order Detail Route with Argument
         composable(
             route = Screen.OrderDetail.route,
             arguments = listOf(navArgument("orderId") { type = NavType.StringType })
@@ -116,11 +116,32 @@ fun NavGraph(
             OrderDetailScreen(
                 orderId = orderId,
                 laundryViewModel = laundryViewModel,
+                onBack = { navController.popBackStack() },
+                onPayClick = { id ->
+                    navController.navigate(Screen.Payment.createRoute(id))
+                }
+            )
+        }
+
+        composable(
+            route = Screen.Payment.route,
+            arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId") ?: "1"
+            PaymentScreen(
+                orderId = orderId,
+                laundryViewModel = laundryViewModel,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // User Profile Route
+        composable(Screen.Contact.route) {
+            ContactScreen(
+                laundryViewModel = laundryViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(Screen.Profile.route) {
             ProfileScreen(
                 authViewModel = authViewModel,
@@ -133,7 +154,6 @@ fun NavGraph(
             )
         }
 
-        // Settings Route
         composable(Screen.Settings.route) {
             SettingsScreen(
                 settingsViewModel = settingsViewModel,
@@ -141,7 +161,6 @@ fun NavGraph(
             )
         }
 
-        // Help & Documentation Route
         composable(Screen.Help.route) {
             HelpScreen(
                 onBack = { navController.popBackStack() }

@@ -3,18 +3,24 @@ package com.example.inandoutlaundry.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.inandoutlaundry.viewmodel.LaundryViewModel
 
+/**
+ * OrderDetailScreen displays comprehensive details for a selected order.
+ * Developed by third-year software development student.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderDetailScreen(
     orderId: String,
     laundryViewModel: LaundryViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onPayClick: (String) -> Unit
 ) {
     val orders by laundryViewModel.orders.collectAsState()
     val order = orders.find { it.id == orderId }
@@ -52,6 +58,17 @@ fun OrderDetailScreen(
                         Text(text = "Delivery Address: ${order.deliveryAddress}", style = MaterialTheme.typography.bodyMedium)
                         Text(text = "Notes: ${order.notes}", style = MaterialTheme.typography.bodyMedium)
                     }
+                }
+
+                Button(
+                    onClick = { onPayClick(order.id) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Icon(Icons.Filled.Payment, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Proceed to Demo Payment")
                 }
             }
         }
